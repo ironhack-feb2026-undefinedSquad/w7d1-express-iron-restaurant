@@ -54,25 +54,24 @@ app.get("/contact", (req, res, next) => {
 
 
 // POST /pizzas -- Create a new pizza
-app.post("/pizzas", (req, res, next) => {
+app.post("/pizzas", async (req, res, next) => {
     
     const newPizza = req.body
 
-    Pizza.create(newPizza)
-        .then((pizzaFromDB) => {
-            res.status(201).json(pizzaFromDB)
-        })
-        .catch((err) => {
-            console.log("error creating a new pizza...\n\n", err)
-            res.status(500).json({ error: "Error creating a new pizza in the DB..." })
-        })
+    try {
+        const pizzaFromDB = await Pizza.create(newPizza)
+        res.status(201).json(pizzaFromDB)
+    } catch (err) {
+        console.log("error creating a new pizza...\n\n", err)
+        res.status(500).json({ error: "Error creating a new pizza in the DB..." })
+    }
 })
 
 
 
 // GET /pizzas -- Get the list of pizzas
 // GET /pizzas?maxPrice=16 -- all pizzas with a max price of 16
-app.get("/pizzas", (req, res, next) => {
+app.get("/pizzas", async (req, res, next) => {
 
     let { maxPrice } = req.query
 
@@ -82,83 +81,76 @@ app.get("/pizzas", (req, res, next) => {
         filter = { price: { $lte: maxPrice } }
     }
 
-    Pizza.find(filter)
-        .populate("cook")
-        .then((pizzasFromDB) => {
-            res.json(pizzasFromDB)
-        })
-        .catch((err) => {
-            console.log("Error getting pizzas from DB... \n\n", err)
-            res.status(500).json({ error: "Failed to get list of pizzas" })
-        })
+    try {
+        const pizzasFromDB = await Pizza.find(filter).populate("cook")
+        res.json(pizzasFromDB)
+    } catch (err) {
+        console.log("Error getting pizzas from DB... \n\n", err)
+        res.status(500).json({ error: "Failed to get list of pizzas" })
+    }
 })
 
 
 // GET /pizzas/:pizzaId -- Get the details for one pizza
-app.get("/pizzas/:pizzaId", (req, res, next) => {
+app.get("/pizzas/:pizzaId", async (req, res, next) => {
 
     const { pizzaId } = req.params
 
-    Pizza.findById(pizzaId)
-        .populate("cook")
-        .then((pizzaFromDB) => {
-            res.json(pizzaFromDB)
-        })
-        .catch(err => {
-            console.log("Error getting pizza details from DB...\n\n", err);
-            res.status(500).json({ error: "Failed to get pizza details" });
-        })
+    try {
+        const pizzaFromDB = await Pizza.findById(pizzaId).populate("cook")
+        res.json(pizzaFromDB)
+    } catch (err) {
+        console.log("Error getting pizza details from DB...\n\n", err);
+        res.status(500).json({ error: "Failed to get pizza details" });
+    }
 })
 
 
 
 // PUT /pizzas/:pizzaId -- Update one pizza
-app.put("/pizzas/:pizzaId", function (req, res, next) {
+app.put("/pizzas/:pizzaId", async function (req, res, next) {
 
     const { pizzaId } = req.params;
     const newDetails = req.body;
 
-    Pizza.findByIdAndUpdate(pizzaId, newDetails, { new: true })
-        .then((pizzaFromDB) => {
-            res.json(pizzaFromDB)
-        })
-        .catch((err) => {
-            console.error("Error updating pizza...", err);
-            res.status(500).json({ error: "Failed to update a pizza" });
-        })
+    try {
+        const pizzaFromDB = await Pizza.findByIdAndUpdate(pizzaId, newDetails, { new: true })
+        res.json(pizzaFromDB)
+    } catch (err) {
+        console.error("Error updating pizza...", err);
+        res.status(500).json({ error: "Failed to update a pizza" });
+    }
 })
 
 
 
 // DELETE /pizzas/:pizzaId -- Delete one pizza
-app.delete("/pizzas/:pizzaId", (req, res, next) => {
+app.delete("/pizzas/:pizzaId", async (req, res, next) => {
     const {pizzaId} = req.params;
 
-    Pizza.findByIdAndDelete(pizzaId)
-        .then((response) => {
-            res.json(response)
-        })
-        .catch((err) => {
-            console.error("Error deleting pizza...", err);
-            res.status(500).json({ error:  "Failed to delete a pizza" });
-        })
+    try {
+        const response = await Pizza.findByIdAndDelete(pizzaId)
+        res.json(response)
+    } catch (err) {
+        console.error("Error deleting pizza...", err);
+        res.status(500).json({ error:  "Failed to delete a pizza" });
+    }
 })
 
 
 
 // POST /cooks -- Create a new cook
-app.post('/cooks', (req, res, next) => {
+app.post('/cooks', async (req, res, next) => {
 
     const newCook = req.body
 
-    Cook.create(newCook)
-        .then((cookFromDB) => {
-            res.status(201).json(cookFromDB)
-        })
-        .catch((err) => {
-            console.log("Error creating a new cook in the DB...", err)
-            res.status(500).json({ error: "Failed to create a new cook" })
-        })
+    try {
+        const cookFromDB = await Cook.create(newCook)
+        res.status(201).json(cookFromDB)
+    } catch (err) {
+        console.log("Error creating a new cook in the DB...", err)
+        res.status(500).json({ error: "Failed to create a new cook" })
+    }
 })
 
 
