@@ -108,6 +108,37 @@ app.get("/pizzas/:pizzaId", (req, res, next) => {
 
 
 
+// PUT /pizzas/:pizzaId -- Update one pizza
+app.put("/pizzas/:pizzaId", function (req, res, next) {
+
+    const { pizzaId } = req.params
+
+    Pizza.findByIdAndUpdate(pizzaId, newDetails, { new: true })
+        .then((pizzaFromDB) => {
+            res.json(pizzaFromDB)
+        })
+        .catch((err) => {
+            console.error("Error updating pizza...");
+            res.json({ error: "Failed to update a pizza" });
+        })
+})
+
+
+
+// DELETE /pizzas/:pizzaId -- Delete one pizza
+app.delete("/pizzas/:pizzaId", (req, res, next) => {
+    Pizza.findByIdAndDelete()
+        .then((response) => {
+            res.json(response)
+        })
+        .catch((err) => {
+            console.error("Error deleting pizza...");
+            res.json({ error: err });
+        })
+})
+
+
+
 
 /****************/
 /* START SERVER */
