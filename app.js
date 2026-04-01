@@ -120,7 +120,7 @@ app.put("/pizzas/:pizzaId", function (req, res, next) {
         })
         .catch((err) => {
             console.error("Error updating pizza...", err);
-            res.json({ error: "Failed to update a pizza" });
+            res.status(500).json({ error: "Failed to update a pizza" });
         })
 })
 
@@ -136,7 +136,7 @@ app.delete("/pizzas/:pizzaId", (req, res, next) => {
         })
         .catch((err) => {
             console.error("Error deleting pizza...", err);
-            res.json({ error:  "Failed to delete a pizza" });
+            res.status(500).json({ error:  "Failed to delete a pizza" });
         })
 })
 
