@@ -4,6 +4,7 @@ const logger = require("morgan")
 
 const Pizza = require("./models/Pizza.model")
 
+mongoose.set('runValidators', true);
 
 const app = express()
 
