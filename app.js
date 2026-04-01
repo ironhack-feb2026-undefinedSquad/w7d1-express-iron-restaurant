@@ -113,13 +113,15 @@ app.put("/pizzas/:pizzaId", function (req, res, next) {
 
     const { pizzaId } = req.params
 
+    const newDetails = req.body
+
     Pizza.findByIdAndUpdate(pizzaId, newDetails, { new: true })
         .then((pizzaFromDB) => {
-            res.json(pizzaFromDB)
+            res.status(201).json(pizzaFromDB)
         })
         .catch((err) => {
-            console.error("Error updating pizza...");
-            res.json({ error: "Failed to update a pizza" });
+            console.error("Error updating pizza...\n\n", err);
+            res.status(500).json({ error: "Failed to update a pizza" });
         })
 })
 
@@ -127,13 +129,15 @@ app.put("/pizzas/:pizzaId", function (req, res, next) {
 
 // DELETE /pizzas/:pizzaId -- Delete one pizza
 app.delete("/pizzas/:pizzaId", (req, res, next) => {
-    Pizza.findByIdAndDelete()
+    const { pizzaId } = req.params
+
+    Pizza.findByIdAndDelete(pizzaId)
         .then((response) => {
-            res.json(response)
+            res.status(204).json(response)
         })
         .catch((err) => {
-            console.error("Error deleting pizza...");
-            res.json({ error: err });
+            console.error("Error deleting pizza...\n\n", err);
+            res.status(500).json({ error: "Failed to delete a pizza" });
         })
 })
 
